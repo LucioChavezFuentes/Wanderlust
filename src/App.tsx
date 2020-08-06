@@ -1,56 +1,74 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import $ from 'jquery';
 import logo from './logo.svg';
 import { Counter } from './features/counter/Counter';
 import './App.css';
+import './reset.css';
+
+import jqueryRender from './jquery/main';
 
 function App() {
+
+  useEffect(() => {
+    jqueryRender()
+  })
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <header>
+      <img className="logo" src="https://s3.amazonaws.com/codecademy-content/courses/intermediate-javascript-requests/wanderlust/logo.svg" alt="logo" />
+    </header>
+    <main>
+      <h1 className='h1'>Where do you want to land?</h1>
+      <form className='form' autoComplete="off">
+        <input type="text" id="city" />
+        <button id="button" type="submit">Submit</button>
+      </form>
+    </main>
+    <div className="container">
+    <div id="destination">
+
+    </div>
+    <div className="sectiontitle">
+      <h2>WEATHER</h2>
+    </div>
+    <section id="weather">
+
+        <div className="weather" id="weather1">
+
+        </div>
+        <div className="weather" id="weather2">
+
+        </div>
+        <div className="weather" id="weather3">
+
+        </div>
+        <div className="weather" id="weather4">
+
+        </div>
+
+    </section>
+    <div className="sectiontitle">
+      <h2>TOP ATTRACTIONS</h2>
+    </div>
+      <section id="venues">
+        <div className="venue" id="venue1">
+
+        </div>
+        <div className="venue" id="venue2">
+
+        </div>
+        <div className="venue" id="venue3">
+
+        </div>
+        <div className="venue" id="venue4">
+
+        </div>
+        <div className="venue" id="venue5">
+
+        </div>
+      </section>
+    </div>
     </div>
   );
 }
