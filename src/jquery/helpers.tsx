@@ -21,8 +21,8 @@ export const createVenueHTML = (name : string, location: any, iconSource: any, p
   
 export const createWeatherHTML = (currentDay : any) => {
     //console.log(weekDays[((new Date(currentDay.date)).getDay()) +1]
-    return `<h2> High: ${currentDay.main.maxtemp_f}</h2>
-      <h2> Low: ${currentDay.main.mintemp_f}</h2>
+    return `<h2> High: ${kelvinToFahrenheit(currentDay.main.temp_max)}</h2>
+      <h2> Low: ${kelvinToFahrenheit(currentDay.main.temp_min)}</h2>
       <img src="https://openweathermap.org/img/wn/${currentDay.weather[0].icon}@2x.png" class="weathericon" />
   <h2>${currentDay.weather[0].description}</h2>
       <h2>${weekDays[(new Date(currentDay.date)).getDay()]}</h2>
@@ -42,30 +42,45 @@ export const getNecesaryForecast = (listForecast : Forecast[], todayForecast: an
     }
 
     let forecastIndex = 0;
-    let found = false;
+    //let found = false;
 
-    let forecastDate = dayjs(listForecast[forecastIndex].dt).date()
+   
     let dayDate = day.date()
+    let arrayHasFinished = (forecastIndex >= listForecast.length)
 
-    while(!found || forecastIndex < listForecast.length){
-      if(dayjs(listForecast[forecastIndex].dt_txt).date() ===  day.date() ){
+    for(; forecastIndex < listForecast.length; forecastIndex++){
+      let forecastDate;
+      //This tests if forecast API return dates in seconds (10 length) or miliseconds (seconds * 1000)
+      if(listForecast[forecastIndex].dt.toString().length === 10){
+        const forecastTime = dayjs.unix(listForecast[forecastIndex].dt)
+        forecastDate = forecastTime.date()
+      } else {
+        forecastDate = dayjs(listForecast[forecastIndex].dt_txt).date()
+      }
+      
+      if(forecastDate === dayDate) {
+        return listForecast[forecastIndex]
+      }
+    }
+
+    /*while(!found && !arrayHasFinished){
+      if(forecastDate === dayDate){
         found = true
         return listForecast[forecastIndex]
       } else {
         forecastIndex++
+        arrayHasFinished = (forecastIndex >= listForecast.length)
       }
-    }
-
+    }*/
     if(forecastIndex >= listForecast.length) {
-      return  {
-        error: 'matching day not found'
-        } 
+      throw new Error("matching day not found")
+      
     } else {
-      return {
-        error: 'Unknown'
-      }
+      throw new Error("Unknown")
     }
   });
 
   return forecastDays
 }
+
+const kelvinToFahrenheit = (k: number) => ((k - 273.15) * 9 / 5 + 32).toFixed(0);
