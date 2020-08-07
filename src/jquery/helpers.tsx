@@ -29,7 +29,7 @@ export const createWeatherHTML = (currentDay : any) => {
   <h2>${weekDays[dayjs(currentDay.dt).date()]}</h2>`;
   }
 
-export const getNecesaryForecast = (listForecast : Forecast[], todayForecast: any) => {
+export const getNecessaryForecast = (listForecast : Forecast[], todayForecast: any) => {
 
   const days = Array.from({length: 5}).map((day, index) => {
     return dayjs().add(index, 'day')
@@ -44,9 +44,9 @@ export const getNecesaryForecast = (listForecast : Forecast[], todayForecast: an
     let forecastIndex = 0;
     //let found = false;
 
-   
+    //let forecastDate = dayjs(listForecast[forecastIndex].dt_txt).date()
     let dayDate = day.date()
-    let arrayHasFinished = (forecastIndex >= listForecast.length)
+    //let arrayHasFinished = (forecastIndex >= listForecast.length)
 
     for(; forecastIndex < listForecast.length; forecastIndex++){
       let forecastDate;
@@ -73,10 +73,12 @@ export const getNecesaryForecast = (listForecast : Forecast[], todayForecast: an
       }
     }*/
     if(forecastIndex >= listForecast.length) {
-      throw new Error("matching day not found")
+      console.error("Matching for the next 5 days not found")
+      return {}
       
     } else {
-      throw new Error("Unknown")
+      console.error("Unknown")
+      return {}
     }
   });
 

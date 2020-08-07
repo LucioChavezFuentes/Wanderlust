@@ -1,11 +1,9 @@
 import React, {useEffect} from 'react';
-import $ from 'jquery';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
 import './reset.css';
-
 import jqueryRender from './jquery/main';
+import $ from 'jquery';
+window.$ = $;
 
 function App() {
 

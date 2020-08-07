@@ -1,4 +1,4 @@
-import {createVenueHTML, createWeatherHTML, getNecesaryForecast} from './helpers'
+import {createVenueHTML, createWeatherHTML, getNecessaryForecast} from './helpers'
 
 function jqueryRender() {
 
@@ -84,7 +84,7 @@ const getForecast = async () => {
       //console.log(jsonResponse);
       const listForecast = jsonResponse.list
       //console.log(days);
-      const days = getNecesaryForecast(listForecast, todayForecJson)
+      const days = getNecessaryForecast(listForecast, todayForecJson)
 
       return days
     }
