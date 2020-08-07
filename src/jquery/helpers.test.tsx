@@ -14,8 +14,6 @@ test('getNecessaryForecast function', () => {
             return true
         }
     })
-
-    const listForecast = [{dt: new Date().getDate(), dt_txt: '' }]
     const todayForecast = {dt: dayjs().unix(), }
 
     const expectedResult = [todayForecast, ...daysWithoutFirst]
