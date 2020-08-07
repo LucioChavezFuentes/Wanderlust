@@ -71,9 +71,10 @@
   }
   
   .container {
-    max-width: 900px;
+    max-width: 1100px;
     margin: auto;
     visibility: hidden;
+    margin-bottom: 150px;
   }
   
   .weather h2 {
@@ -100,23 +101,49 @@
     width: 275px;
     padding: 20px;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+
+  .venue-name {
+    min-height: 120px;
+  }
+
+  .venueAddress {
+    min-height: 220px;
+  }
+
+  .wordAddress {
+    margin-bottom: 10px;
   }
   
   .venueimage {
-    margin-top: 20px;
+    margin: 20px auto;
+    
   }
   
   .photoimage {
     margin-top: 10px;
+    color: gray;
+    font-family: Work Sans;
   }
   
   #venues h2 {
     font-family: Work Sans;
     font-size: 22px;
     font-weight: 600;
-    line-height: 0.77;
+    line-height: 1.27;
     text-align: center;
     padding-top: 5px;
+  }
+
+  #venues p {
+    font-family: Work Sans;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.36;
+    text-align: left;
+    color: #4a4a4a;
+    padding-left: 5px;
   }
   
   #destination {
@@ -126,6 +153,7 @@
     letter-spacing: 0.9px;
     text-align: left;
     color: #27b7c1;
+    margin-bottom: 10px;
   }
   
   .sectiontitle {
@@ -168,6 +196,7 @@
     letter-spacing: 0.4px;
     text-align: left;
     color: #ffffff;
+    margin: 10px; 
   }
   
   #button {
@@ -187,6 +216,7 @@
   @media (max-width: 860px) {
     main {
       background-image: url('https://s3.amazonaws.com/codecademy-content/courses/intermediate-javascript-requests/wanderlust/background_photo_moble.jpg');
+      height: 500px
     }
   
     h1 {
@@ -197,6 +227,11 @@
     form {
       margin-top: 30px;
       padding-bottom: 10px;
+    }
+
+    .h1 {
+      padding-top: 100px;
+      
     }
   
     #venues, #weather {
@@ -211,6 +246,14 @@
       width: 80%;
       align-items: center;
     }
+
+    .venue-name {
+      min-height: fit-content;
+    }
+
+    .venueAddress {
+      min-height: fit-content;
+    }
   
     .weather {
       padding: 10px 20px;
@@ -220,6 +263,7 @@
     .sectiontitle, .sectiontitle h2, #destination {
       margin: auto;
       text-align: center;
+      margin-bottom: 10px;
     }
   }
   

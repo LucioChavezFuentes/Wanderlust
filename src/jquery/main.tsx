@@ -21,10 +21,14 @@ const $venueDivs = [$("#venue1"),$("#venue2"),$("#venue3"),$("#venue4"),$("#venu
 const $weatherDivs = [$("#weather1"), $("#weather2"), $("#weather3"), $("#weather4")];
 
 
+
+
 // Add AJAX functions here:
 const getVenues = async () => {
-	const city = $input.val()
-  const urlToFetch = `${url}${city}&limit=10&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
+  const numberOfVeneuesToFetch = 5
+  const city = $input.val()
+  const upperDestination = city!.toString()[0].toUpperCase() + city!.toString().slice(1).toLowerCase()
+  const urlToFetch = `${url}${city}&limit=${numberOfVeneuesToFetch}&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
   try {
     const response = await fetch(urlToFetch);
       if(response.ok){
@@ -63,11 +67,15 @@ const getVenues = async () => {
         })
         console.log(venues);
         return venues
+
+      } else {
+        $destination.append(`<p>Please type a city inside ${upperDestination} to get the Top Attractions</p>`)
       }
     
   }
   catch(error){
     console.log(error);
+    throw Error(error)
   }
 }
 
@@ -117,15 +125,7 @@ const getForecast = async () => {
 const renderVenues = (venues : any[]) => {
   
   const arrayOfVenues: any[] = [];
-  
- 
- 
-  /*const venuesPhotosPromises = venues.map(async (venue) =>{
-    return await getVenuePhotos(venue)
-  })
-  */
-  //console.log(venuesPhotosPromises);
- 
+  const city = $input.val()
   
   venues.forEach((venue,index)=>{
     console.log(venue.photoSource);
@@ -167,39 +167,37 @@ const renderVenues = (venues : any[]) => {
       })
   };
   let numRandom = 0;
-    
-$venueDivs.forEach(($venue) =>{
-  numRandom = Math.floor(Math.random()*arrayOfVenues.length)
-  console.log(numRandom);
-  while(isRandomNumRepeated(numRandom)){
-    numRandom = Math.floor(Math.random()*arrayOfVenues.length)
-  console.log(numRandom);
-  }
-  while(isNotRandomNumRepeated(numRandom)){
-    arrayOfNumRandom.push(numRandom)
-    //console.log(arrayOfVenues[numRandom])
-    $venue.append(arrayOfVenues[numRandom]);
-  }
-  /*do {
-    numRandom = Math.floor(Math.random()*arrayOfVenues.length);
-    if(isNotRandomNumRepeated(numRandom)){
-    
-      //console.log(numRandom)
-      arrayOfNumRandom.push(numRandom)
-    $venue.append(arrayOfVenues[numRandom]);
-    } else {
-      numRandom = false;
-    }
-      }*/
-   //while(isNotRandomNumRepeated(numRandom))
+
+  const numberOfVenues = arrayOfVenues.length
+  //If There are not more venues to show than the available divs the function should not select randomly what venues to show 
+  if(numberOfVenues <= $venueDivs.length) {
+    $venueDivs.forEach(($venue, index) =>{
+      $venue.append(arrayOfVenues[index]);
+  })
+  } else {
+    $venueDivs.forEach(($venue) =>{
   
-})
- 
-$destination.append(`<h2>${venues[0].location.city}</h2>`);
+      numRandom = Math.floor(Math.random()*numberOfVenues)
+      console.log(numRandom);
+      while(isRandomNumRepeated(numRandom)){
+        numRandom = Math.floor(Math.random()*numberOfVenues)
+      console.log(numRandom);
+      }
+      while(isNotRandomNumRepeated(numRandom)){
+        arrayOfNumRandom.push(numRandom)
+        //console.log(arrayOfVenues[numRandom])
+        $venue.append(arrayOfVenues[numRandom]);
+      }
+    })
+  }
+    
+$destination.append(`<h2>${city?.toString()[0].toUpperCase()}${city?.toString().slice(1).toLowerCase()}</h2>`);
 }
 
 
 const renderForecast = (days: any) => {
+
+  if(days !== undefined) {
   $weatherDivs.forEach(($day, index) => {
     // Add your code here:
 		const currentDay = days[index];
@@ -208,6 +206,9 @@ const renderForecast = (days: any) => {
     
     $day.append(weatherContent);
   });
+  } else {
+    $weatherDivs[0].append('<p> Forecast not avialable for now. Please try again later </p>')
+  }
 }
 
 const executeSearch = () => {
@@ -215,9 +216,13 @@ const executeSearch = () => {
   $weatherDivs.forEach(day => day.empty());
   $destination.empty();
   $container.css("visibility", "visible");
-  getVenues().then((venues) =>{
+  getVenues()
+    .then((venues) => {
     renderVenues(venues);
   })
+    .catch((error) => {
+      console.error(error)
+    })
   getForecast().then((days) =>{
     renderForecast(days);
   })
