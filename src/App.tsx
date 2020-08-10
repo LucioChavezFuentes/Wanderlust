@@ -23,6 +23,7 @@ function App() {
         <button id="button" type="submit">Submit</button>
       </form>
     </main>
+    <p id='submitfeedback'></p>
     <div className="container">
     <div id="destination">
 

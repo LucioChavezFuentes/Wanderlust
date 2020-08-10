@@ -19,7 +19,7 @@ const $destination = $('#destination');
 const $container = $('.container');
 const $venueDivs = [$("#venue1"),$("#venue2"),$("#venue3"),$("#venue4"),$("#venue5"), $("#venue6")];
 const $weatherDivs = [$("#weather1"), $("#weather2"), $("#weather3"), $("#weather4")];
-
+const $submitFeedback = $('#submitfeedback')
 
 
 
@@ -217,17 +217,28 @@ const executeSearch = () => {
   $venueDivs.forEach(venue => venue.empty());
   $weatherDivs.forEach(day => day.empty());
   $destination.empty();
-  $container.css("visibility", "visible");
-  getVenues()
+  $submitFeedback.empty();
+  
+  if($input.val() !== '') {
+
+    $container.css("visibility", "visible");
+
+    getVenues()
     .then((venues) => {
     renderVenues(venues);
-  })
+    })
     .catch((error) => {
       console.error(error)
     })
-  getForecast().then((days) =>{
+
+    getForecast().then((days) =>{
     renderForecast(days);
-  })
+    })
+    
+  } else {
+    $submitFeedback.append('Please write a city or country before submitting')
+  }
+  //TODO: ¿Why returning false?
   return false;
 }
 
