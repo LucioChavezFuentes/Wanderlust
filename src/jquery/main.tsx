@@ -1,4 +1,4 @@
-import {createVenueHTML, createWeatherHTML, getNecessaryForecast} from './helpers'
+import {createVenueHTML, createWeatherHTML, getNecessaryForecast, shuffleArray} from './helpers'
 
 function jqueryRender() {
 
@@ -25,21 +25,25 @@ const $weatherDivs = [$("#weather1"), $("#weather2"), $("#weather3"), $("#weathe
 
 // Add AJAX functions here:
 const getVenues = async () => {
-  const numberOfVeneuesToFetch = 5
+  const numberOfVeneuesToFetch = 10;
   const city = $input.val()
   const upperDestination = city!.toString()[0].toUpperCase() + city!.toString().slice(1).toLowerCase()
   const urlToFetch = `${url}${city}&limit=${numberOfVeneuesToFetch}&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
   try {
     const response = await fetch(urlToFetch);
       if(response.ok){
-        //console.log(response);
+      
         const jsonResponse = await response.json();
-        //console.log(jsonResponse);
-        const venues = jsonResponse.response.groups[0].items.map((item: any) =>{
+       
+        const allVenues = jsonResponse.response.groups[0].items.map((item: any) =>{
           return item.venue
         })
+
+        //suffleArray helps to return a random list of venues to show, current slice config is to to get first five of the "numberOfVeneuesToFetch"
+        const numberOfVenuesToShow = 5;
+        const selectedVenues : any[] = shuffleArray(allVenues).slice(0, numberOfVenuesToShow);
          
-   const photoPromises = venues.map(( async(venue : any) =>{
+   const photoPromises = selectedVenues.map(( async(venue : any) =>{
             
     const photosUrlToFetch  = `https://api.foursquare.com/v2/venues/${venue.id}/photos?group=venue&limit=30&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
     try{
@@ -61,12 +65,10 @@ const getVenues = async () => {
         }))
      const photoSources = await Promise.all(photoPromises);   
       
-        //console.log(photoSources)
-        photoSources.forEach((photoSource,index) =>{
-          venues[index].photoSource = photoSource
+        photoSources.forEach((photoSource,index) => {
+          selectedVenues[index].photoSource = photoSource
         })
-        console.log(venues);
-        return venues
+        return selectedVenues
 
       } else {
         $destination.append(`<p>Please type a city inside ${upperDestination} to get the Top Attractions</p>`)
@@ -122,17 +124,17 @@ const getForecast = async () => {
       }
 */
 // Render functions
-const renderVenues = (venues : any[]) => {
+const renderVenues = (venues : any[] | undefined) => {
   
   const arrayOfVenues: any[] = [];
   const city = $input.val()
   
-  venues.forEach((venue,index)=>{
+  venues!.forEach((venue,index)=>{
     console.log(venue.photoSource);
     //getVenuePhotos(venue).then((photoSource) =>{
         const venueIcon = venue.categories[0].icon
     const venueImgSrc = `${venueIcon.prefix}bg_64${venueIcon.suffix}`
-    let venueContent = createVenueHTML(venue.name, venue.location,venueImgSrc,venue.photoSource);
+    let venueContent = createVenueHTML(venue.name, venue.location, venueImgSrc, venue.photoSource);
     //console.log(venueContent)
     arrayOfVenues.push(venueContent);
     

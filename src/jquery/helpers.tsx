@@ -98,4 +98,33 @@ export const getNecessaryForecast = (listForecast : Forecast[] | undefined, toda
     }*/
 }}
 
+
+export const shuffleArray = (array : any[]) => {
+  let arrayToShuffle = [...array]
+  for (let i = arrayToShuffle.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arrayToShuffle[i], arrayToShuffle[j]] = [arrayToShuffle[j], arrayToShuffle[i]];
+  }
+
+  return arrayToShuffle
+}
+
+/*const shuffleArray = (array : any[]) => {
+          let m = array.length, t, i;
+        
+          // While there remain elements to shuffle…
+          while (m) {
+        
+            // Pick a remaining element…
+            i = Math.floor(Math.random() * m--);
+        
+            // And swap it with the current element.
+            t = array[m];
+            array[m] = array[i];
+            array[i] = t;
+          }
+        
+          return array;
+        }*/
+
 const kelvinToFahrenheit = (k: number) => ((k - 273.15) * 9 / 5 + 32).toFixed(0);
