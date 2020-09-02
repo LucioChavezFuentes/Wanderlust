@@ -149,8 +149,7 @@ function jqueryRender(setLoading: any) {
 
 
   const renderForecast = (days: any) => {
-
-    const city = $input.val()
+    
     if (days !== undefined) {
       $weatherDivs.forEach(($day, index) => {
         // Add your code here:
