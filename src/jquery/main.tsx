@@ -1,6 +1,6 @@
 import { createVenueHTML, createWeatherHTML, getNecessaryForecast, shuffleArray } from './helpers'
 
-function jqueryRender() {
+function jqueryRender(setLoading: any) {
 
   // Foursquare API Info
   const clientId = '22GIOHEN3LF32QADSTXTBBOQEURJQNBWOABGZKPYQV34IKPM';
@@ -20,8 +20,6 @@ function jqueryRender() {
   const $venueDivs = [$("#venue1"), $("#venue2"), $("#venue3"), $("#venue4"), $("#venue5"), $("#venue6")];
   const $weatherDivs = [$("#weather1"), $("#weather2"), $("#weather3"), $("#weather4")];
   const $submitFeedback = $('#submitfeedback')
-
-
 
   // Add AJAX functions here:
   const getVenues = async () => {
@@ -145,6 +143,8 @@ function jqueryRender() {
     })
 
     $destination.append(`<h2>${city?.toString()[0].toUpperCase()}${city?.toString().slice(1).toLowerCase()}</h2>`);
+
+    setLoading(false)
   }
 
 
@@ -166,18 +166,20 @@ function jqueryRender() {
   }
 
   const executeSearch = () => {
+    setLoading(true)
     $venueDivs.forEach(venue => venue.empty());
     $weatherDivs.forEach(day => day.empty());
     $destination.empty();
     $submitFeedback.empty();
 
     if ($input.val() !== '') {
-
+      
       $container.css("visibility", "visible");
 
       getVenues()
         .then((venues) => {
           renderVenues(venues);
+          
         })
         .catch((error) => {
           console.error(error)
@@ -190,6 +192,7 @@ function jqueryRender() {
     } else {
       $container.css("visibility", "hidden");
       $submitFeedback.append('Please write a city or country before submitting')
+      setLoading(false)
     }
     //TODO: ¿Why returning false?
     return false;

@@ -1,15 +1,22 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import './reset.css';
 import jqueryRender from './jquery/main';
+
+//material ui
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+//jquery
 import $ from 'jquery';
 window.$ = $;
 
 function App() {
 
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
-    jqueryRender()
-  })
+    jqueryRender(setLoading)
+  }, [])
 
   return (
     <div className="App">
@@ -20,9 +27,13 @@ function App() {
       <h1 className='h1'>Where do you want to land?</h1>
       <form className='form' autoComplete="off">
         <input type="text" id="city" />
-        <button id="button" type="submit">Submit</button>
+        <button id="button" type="submit">Let's Fly!</button>
       </form>
     </main>
+    <div style={{display: loading ? 'block' : "none", width: '100%', margin: '0 auto', textAlign: 'center',/* position: 'absolute', left: '45%'*/ }}>
+      <CircularProgress size='100px' />
+    </div>
+    
     <p id='submitfeedback'></p>
     <div className="container">
     <div id="destination">
