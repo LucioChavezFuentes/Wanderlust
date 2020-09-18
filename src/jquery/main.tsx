@@ -31,9 +31,11 @@ function jqueryRender(setLoading: any) {
 
   // Render functions
   const renderVenues = (venues: any[] | undefined) => {
+    const city = $input.val()
+    if(venues !== undefined && venues.length !== 0) {
 
     const arrayOfVenues: any[] = [];
-    const city = $input.val()
+    
 
     venues!.forEach((venue, index) => {
 
@@ -52,6 +54,11 @@ function jqueryRender(setLoading: any) {
     $destination.append(`<h2>${city?.toString()[0].toUpperCase()}${city?.toString().slice(1).toLowerCase()}</h2>`);
 
     setLoading(false)
+
+    } else {
+      setLoading(false)
+      $destination.append(`<h2>No attractions found, try searching for a city inside ${city?.toString()[0].toUpperCase()}${city?.toString().slice(1).toLowerCase()}</h2>`)
+    }
   }
 
 
