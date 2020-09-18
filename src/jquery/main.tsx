@@ -1,16 +1,8 @@
-import { createVenueHTML, createWeatherHTML, getNecessaryForecast, shuffleArray } from './helpers'
+import { createVenueHTML, createWeatherHTML } from './helpers'
 
 function jqueryRender(setLoading: any) {
 
-  // Foursquare API Info
-  const clientId = '22GIOHEN3LF32QADSTXTBBOQEURJQNBWOABGZKPYQV34IKPM';
-  const clientSecret = 'LVAFO05J1XOBKVAIMBQBC4UCLQDE4DMTR3LS4SL453DUSX1C';
-  const url = 'https://api.foursquare.com/v2/venues/explore?near=';
-  //Foursquare Photos Info
-  //const photoUrl = 'https://api.foursquare.com/v2/venues/VENUE_ID/photos'
-  // APIXU Info
-  const apiKey = '31e1fcad563a8a38bd05b67f3c5e648e';
-  const forecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=';
+  const venuesForecastURL = 'https://i2xcyaimz0.execute-api.us-west-1.amazonaws.com/Prod/getVenuesAndForecast/'
 
   // Page Elements
   const $input = $('#city');
@@ -22,106 +14,21 @@ function jqueryRender(setLoading: any) {
   const $submitFeedback = $('#submitfeedback')
 
   // Add AJAX functions here:
-  const getVenues = async () => {
-    const numberOfVeneuesToFetch = 10;
+  const getVenuesAndForecast = async () => {
     const city = $input.val()
-    const upperDestination = city!.toString()[0].toUpperCase() + city!.toString().slice(1).toLowerCase()
-    const urlToFetch = `${url}${city}&limit=${numberOfVeneuesToFetch}&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
-    try {
-      const response = await fetch(urlToFetch);
-      if (response.ok) {
+    const urlToFetch = `${venuesForecastURL}${city}`
 
-        const jsonResponse = await response.json();
+    const response = await fetch(urlToFetch)
 
-        const allVenues = jsonResponse.response.groups[0].items.map((item: any) => {
-          return item.venue
-        })
-
-        //suffleArray helps to return a random list of venues to show, current slice config is to to get first five of the "numberOfVeneuesToFetch"
-        const numberOfVenuesToShow = 5;
-        const selectedVenues: any[] = shuffleArray(allVenues).slice(0, numberOfVenuesToShow);
-
-        const photoPromises = selectedVenues.map((async (venue: any) => {
-
-          const photosUrlToFetch = `https://api.foursquare.com/v2/venues/${venue.id}/photos?group=venue&limit=30&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
-          try {
-            const response = await fetch(photosUrlToFetch);
-            if (response.ok) {
-              const jsonResponse = await response.json();
-              //console.log(jsonResponse);
-              //console.log(`${jsonResponse.response.photos.items[0].prefix}300x300${jsonResponse.response.photos.items[0].suffix}`)
-
-              return (`${jsonResponse.response.photos.items[0].prefix}300x300${jsonResponse.response.photos.items[0].suffix}`)
-
-
-            }
-          }
-          catch (error) {
-            console.log(error)
-          }
-
-        }))
-        const photoSources = await Promise.all(photoPromises);
-
-        photoSources.forEach((photoSource, index) => {
-          selectedVenues[index].photoSource = photoSource
-        })
-        return selectedVenues
-
-      } else {
-        $destination.append(`<p>Please type a city inside ${upperDestination} to get the Top Attractions</p>`)
-        return []
-      }
-
+    try{
+      const jsonResponse = await response.json();
+      return jsonResponse
     }
-    catch (error) {
-      console.log(error);
-      throw Error(error)
+    catch(error) {
+      console.error(error)
     }
   }
 
-  const getForecast = async () => {
-    const urlToFetch = `${forecastUrl}${$input.val()}&appid=${apiKey}`
-    const todayForeUrl = `https://api.openweathermap.org/data/2.5/weather?q=${$input.val()}&appid=${apiKey}`
-    try {
-      const response = await fetch(urlToFetch);
-      const todayForecResponse = await fetch(todayForeUrl);
-      if (response.ok && todayForecResponse.ok) {
-        //console.log(response)
-        const jsonResponse = await response.json();
-        const todayForecJson = await todayForecResponse.json()
-        //console.log(jsonResponse);
-        const listForecast = jsonResponse.list
-        //console.log(days);
-        const days = getNecessaryForecast(listForecast, todayForecJson)
-
-        return days
-      }
-    }
-    catch (error) {
-      console.log(error)
-    }
-  }
-
-  /* const getVenuePhotos = async (venue) => {
-      const photosUrlToFetch  = `https://api.foursquare.com/v2/venues/${venue.id}/photos?group=venue&limit=30&client_id=${clientId}&client_secret=${clientSecret}&v=20190111`
-      try{
-        const response = await fetch(photosUrlToFetch);
-        if (response.ok){
-          const jsonResponse = await response.json();
-          //console.log(jsonResponse);
-           //console.log(`${jsonResponse.response.photos.items[0].prefix}300x300${jsonResponse.response.photos.items[0].suffix}`)
-   
-   return `${jsonResponse.response.photos.items[0].prefix}300x300${jsonResponse.response.photos.items[0].suffix}`
-   
-          
-        }
-      }
-      catch(error) {
-        console.log(error)
-      }
-        }
-  */
   // Render functions
   const renderVenues = (venues: any[] | undefined) => {
 
@@ -175,17 +82,12 @@ function jqueryRender(setLoading: any) {
       
       $container.css("visibility", "visible");
 
-      getVenues()
-        .then((venues) => {
-          renderVenues(venues);
-          
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-
-      getForecast().then((days) => {
-        renderForecast(days);
+      getVenuesAndForecast().then((res) => {
+        renderVenues(res.venues)
+        renderForecast(res.forecast)
+      })
+      .catch(error => {
+        console.error(error)
       })
 
     } else {
